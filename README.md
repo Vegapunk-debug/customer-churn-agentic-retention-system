@@ -1,2 +1,5 @@
-# customer-churn-agentic-retention-system
-An end-to-end Machine Learning and Agentic AI system to predict customer churn and generate structured retention strategies using LangGraph and Open-Source LLMs.
+# Customer Churn Prediction and Agentic Retention Strategy System
+
+## Project Overview
+This repository contains an end-to-end artificial intelligence system designed to identify at-risk customers and generate structured, data-driven retention strategies. The project is divided into two primary phases: a machine learning pipeline for churn classification and an agentic AI assistant for personalized intervention planning.
+
