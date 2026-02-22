@@ -7,10 +7,10 @@ This repository contains an end-to-end artificial intelligence system designed t
 The current phase focuses on building a robust automated data pipeline that transforms raw customer data into a machine-learning-ready format.
 
 ### Key Features
-* **Automated Ingestion:** Uses `kagglehub` to fetch the latest Telco Churn dataset directly [cite: 5, 2026-02-01].
+* **Automated Ingestion:** Uses `kagglehub` to fetch the latest Telco Churn dataset directly.
 * **Data Cleaning:** Handles missing values in `TotalCharges` and removes non-predictive features like `customerID`.
 * **Feature Engineering:** Implements Binary Encoding and One-Hot Encoding for categorical variables.
-* **High-Performance Export:** Saves processed data in **Parquet** format to preserve data types and optimize speed [cite: 2026-02-01].
+* **High-Performance Export:** Saves processed data in **Parquet** format to preserve data types and optimize speed.
 
 ---
 
