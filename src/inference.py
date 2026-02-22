@@ -6,7 +6,7 @@ Cluster_descriptions = {
     3: "The Phone-Only Group: No internet, tiny bills, very stable, rarely leave.",
     4: "The Internet-Only Group: No phone service, just internet, normal cancellation rate."
 }
-def identify_user_cluster(user_df, model_path='../models/churn_kmeans_pipeline.pkl'):
+def identify_user_cluster(user_df, model_path='../models/kmeans_pipeline.pkl'):
     
     pipeline = joblib.load(model_path)
     
