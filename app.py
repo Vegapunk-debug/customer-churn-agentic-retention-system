@@ -88,3 +88,33 @@ else:
             'InternetService': internet_service,
             'OnlineSecurity': online_security,
             'OnlineBackup': online_backup,
+            'DeviceProtection': device_protection,
+            'TechSupport': tech_support,
+            'StreamingTV': streaming_tv,
+            'StreamingMovies': streaming_movies,
+            'Contract': contract,
+            'PaperlessBilling': paperless_billing,
+            'PaymentMethod': payment_method,
+            'MonthlyCharges': monthly_charges,
+            'TotalCharges': str(total_charges)
+        }
+        
+
+        processed_sample = preprocess_user_query(raw_input, training_features)
+        
+
+        prediction, probability = random_forest_inference(processed_sample)
+        
+
+        cluster_id, cluster_desc = identify_user_cluster(processed_sample)
+        
+
+        st.divider()
+        
+        col_res1, col_res2 = st.columns([1, 1])
+        
+        with col_res1:
+            st.subheader("Prediction Result")
+            display_prediction_results(prediction, probability)
+
+        with col_res2:
