@@ -13,11 +13,11 @@ Cluster_descriptions = {
 
 
 @st.cache_resource
-def load_kmeans_pipeline(model_path='../models/kmeans_pipeline.pkl'):
+def load_kmeans_pipeline(model_path='models/kmeans_pipeline.pkl'):
     return joblib.load(model_path)
 
 @st.cache_resource
-def load_rf_model(model_path='../models/random_forest_model.pkl'):
+def load_rf_model(model_path='models/rf_model.pkl'):
     return joblib.load(model_path)
 
 @st.cache_resource
@@ -37,7 +37,20 @@ def random_forest_inference(user_df):
 
     rf_model = load_rf_model()
     prediction = rf_model.predict(user_df)[0]
-    return prediction
+    probability = rf_model.predict_proba(user_df)[0][1]
+    return prediction, probability
+
+def display_prediction_results(prediction, probability):
+    """
+    Displays the prediction result in Streamlit using the user-provided logic.
+    """
+    if prediction == 1:
+        st.error(f"**High Risk**: This customer is likely to CHURN.")
+    else:
+        st.success(f"**Low Risk**: This customer is likely to STAY.")
+    
+    st.metric("Churn Probability", f"{probability:.2%}")
+    st.progress(float(probability))
 
 def rf_feature_contribution_to_churn(user_df):
     rf_model = load_rf_model()
