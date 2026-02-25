@@ -28,7 +28,7 @@ This system uses a **Random Forest Classifier** trained on historical telecom da
 """)
 
 if model is None:
-    st.error(f"Model file not found at `{MODEL_PATH}`. Please ensure the model is trained and saved.")
+    st.error("Model file not found at `models/rf_model.pkl`. Please ensure the model is trained and saved.")
 else:
     training_features = model.feature_names_in_
 
