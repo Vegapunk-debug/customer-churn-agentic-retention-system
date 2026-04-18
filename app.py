@@ -65,7 +65,68 @@ def inject_hyper_ai_css():
             font-family: var(--font-hdr);
             letter-spacing: -0.01em;
         }
+
+        .nexus-card {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 159, 0.1);
+            border-left: 4px solid var(--accent-emerald);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .nexus-card:hover {
+            border-color: var(--accent-emerald);
+            box-shadow: 0 0 20px rgba(0, 255, 159, 0.1);
+            transform: translateY(-2px);
+        }
+
+        @keyframes revealUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        @keyframes glitch {
+            0% { text-shadow: 2px 0 0 red, -2px 0 0 blue; }
+            20% { text-shadow: -2px 0 0 red, 2px 0 0 blue; }
+            40% { text-shadow: 2px 0 0 red, -2px 0 0 blue; }
+            60% { text-shadow: -2px 0 0 red, 2px 0 0 blue; }
+            80% { text-shadow: 2px 0 0 red, -2px 0 0 blue; }
+            100% { text-shadow: -2px 0 0 red, 2px 0 0 blue; }
+        }
+
+        .glitch-text:hover {
+            animation: glitch 0.3s infinite;
+        }
+
+        .reveal {
+            animation: revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .scanline {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(0, 255, 159, 0.01) 50%, transparent);
+            z-index: 9999;
+            pointer-events: none;
+            animation: scanline 8s linear infinite;
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.3; transform: scaleY(0.5); }
+            to { opacity: 1; transform: scaleY(1); }
+        }
         </style>
+        <div class="scanline"></div>
     """, unsafe_allow_html=True)
 
 
