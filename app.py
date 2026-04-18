@@ -121,13 +121,112 @@ def inject_hyper_ai_css():
             animation: scanline 8s linear infinite;
         }
 
+        .nexus-header {
+            text-align: left;
+            padding: 6rem 0;
+            margin-bottom: 4rem;
+        }
+
+        .nexus-title {
+            font-size: 6rem;
+            font-weight: 900;
+            color: #fff;
+            line-height: 0.8;
+            letter-spacing: -5px;
+            text-transform: uppercase;
+        }
+        
+        .nexus-subtitle {
+            color: var(--accent-emerald);
+            font-family: var(--font-hdr);
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.5em;
+            margin-top: 1.5rem;
+            opacity: 0.8;
+        }
+
+        div[data-baseweb="select"] > div {
+            background-color: rgba(255,255,255,0.02) !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            border-radius: 4px !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        div[data-baseweb="select"] > div:hover {
+            border-color: var(--accent-emerald) !important;
+        }
+        
+        .stNumberInput input {
+            background-color: rgba(255,255,255,0.02) !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            color: #fff !important;
+        }
+
+        div.stButton > button {
+            width: 100%;
+            background: var(--accent-emerald) !important;
+            border: none !important;
+            color: #000 !important;
+            padding: 1rem !important;
+            font-family: var(--font-hdr) !important;
+            font-weight: 900 !important;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease !important;
+        }
+        
+        div.stButton > button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(0, 255, 159, 0.4);
+        }
+
+        .metric-value {
+            font-size: 5rem;
+            font-weight: 800;
+            font-family: var(--font-hdr);
+            line-height: 1;
+        }
+        
+        .metric-label {
+            font-size: 0.75rem;
+            color: rgba(0, 255, 159, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            font-weight: 700;
+        }
+
         @keyframes pulse {
             from { opacity: 0.3; transform: scaleY(0.5); }
             to { opacity: 1; transform: scaleY(1); }
         }
         </style>
         <div class="scanline"></div>
+    
     """, unsafe_allow_html=True)
+
+def render_nexus_header():
+    st.markdown("""
+        <div class="nexus-header reveal">
+            <div class="nexus-title glitch-text">OUTLIER AI</div>
+            <div class="nexus-subtitle">CHURN PREDICTION AND RETENTION SYSTEM // V1.0</div>
+        </div>
+    """, unsafe_allow_html=True)
+
+def render_neural_metrics():
+    st.markdown("""
+        <div class="reveal" style="display: flex; justify-content: space-between; margin-bottom: 2rem; padding: 1rem; background: rgba(0,255,159,0.02); border: 1px solid rgba(0,255,159,0.1); font-family: 'Space Grotesk'; font-size: 0.7rem; color: rgba(0,255,159,0.5); letter-spacing: 0.1em;">
+            <div>SYNC_STATUS: <span style="color: var(--accent-emerald);">OPTIMAL</span></div>
+            <div>LATENCY: <span style="color: var(--accent-emerald);">14ms</span></div>
+            <div>MODEL_IDENT: <span style="color: var(--accent-emerald);">RF_V1.8_ENCORE</span></div>
+            <div>ACTIVE_VECTORS: <span style="color: var(--accent-emerald);">7,421</span></div>
+            <div>SECURITY_ARMOR: <span style="color: var(--accent-emerald);">SHIELD_MAX</span></div>
+        </div>
+    """, unsafe_allow_html=True)
+
+inject_hyper_ai_css()
+render_nexus_header()
+render_neural_metrics()
 
 
 
