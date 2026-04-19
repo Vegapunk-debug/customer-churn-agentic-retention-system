@@ -225,10 +225,40 @@ def render_neural_metrics():
     """, unsafe_allow_html=True)
 
 inject_hyper_ai_css()
+def display_nexus_results(prediction, probability, cluster_id, cluster_desc):
+    st.markdown('<div class="nexus-card reveal">', unsafe_allow_html=True)
+    col1, col2 = st.columns([1.5, 1])
+    
+    with col1:
+        st.markdown('<div class="metric-label">Neural Probability Index</div>', unsafe_allow_html=True)
+        accent_color = "var(--accent-emerald)" if prediction == 0 else "var(--accent-amber)"
+        status_text = "MAINTAIN ENGAGEMENT" if prediction == 0 else "INTERVENE IMMEDIATELY"
+        
+        st.markdown(f'<div class="metric-value" style="color: {accent_color};">{probability:.1%}</div>', unsafe_allow_html=True)
+        st.markdown(f"""
+            <div style="margin-top: 2rem; border-left: 2px solid {accent_color}; padding-left: 1rem;">
+                <div style="color: {accent_color}; font-weight: 700; letter-spacing: 2px;">{status_text}</div>
+                <div style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-top: 0.5rem;">
+                    Model confidence high. Anomalous churn signatures detected in behavioral clusters.
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown(f"""
+            <div style="padding: 1rem; background: rgba(255,255,255,0.02); height: 100%; display: flex; flex-direction: column; justify-content: center;">
+                <div class="metric-label" style="margin-bottom: 1rem;">Target Archetype</div>
+                <div style="font-size: 1.2rem; font-weight: 600; color: #fff;">SEGMENT_{cluster_id}</div>
+                <div style="color: rgba(255,255,255,0.4); font-style: italic; margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+                    {cluster_desc}
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+inject_hyper_ai_css()
 render_nexus_header()
 render_neural_metrics()
-
-
 
 model = load_rf_model()
 
@@ -295,60 +325,51 @@ else:
         submit = st.form_submit_button("INFER CHURN VECTOR")
 
     if submit:
-
         raw_input = {
-            'gender': gender,
-            'SeniorCitizen': senior_citizen,
-            'Partner': partner,
-            'Dependents': dependents,
-            'tenure': tenure,
-            'PhoneService': phone_service,
-            'MultipleLines': multiple_lines,
-            'InternetService': internet_service,
-            'OnlineSecurity': online_security,
-            'OnlineBackup': online_backup,
-            'DeviceProtection': device_protection,
-            'TechSupport': tech_support,
-            'StreamingTV': streaming_tv,
-            'StreamingMovies': streaming_movies,
-            'Contract': contract,
-            'PaperlessBilling': paperless_billing,
-            'PaymentMethod': payment_method,
-            'MonthlyCharges': monthly_charges,
+            'gender': gender, 'SeniorCitizen': senior_citizen, 'Partner': partner, 
+            'Dependents': dependents, 'tenure': tenure, 'PhoneService': phone_service,
+            'MultipleLines': multiple_lines, 'InternetService': internet_service,
+            'OnlineSecurity': online_security, 'OnlineBackup': online_backup,
+            'DeviceProtection': device_protection, 'TechSupport': tech_support,
+            'StreamingTV': streaming_tv, 'StreamingMovies': streaming_movies,
+            'Contract': contract, 'PaperlessBilling': paperless_billing,
+            'PaymentMethod': payment_method, 'MonthlyCharges': monthly_charges,
             'TotalCharges': str(total_charges)
         }
         
-
+        with st.empty():
+            for i in range(1, 101, 8):
+                st.markdown(f"""
+                    <div style='padding: 4rem; text-align: center; background: rgba(0,255,159,0.02); border: 1px dashed var(--accent-emerald);'>
+                        <div style='color: var(--accent-emerald); font-family: var(--font-hdr); letter-spacing: 0.5em; font-size: 0.8rem;'>
+                            NEURAL SYNTHESIS IN PROGRESS // {i}%
+                        </div>
+                    </div>
+                """, unsafe_allow_html=True)
+                time.sleep(0.04)
+            st.empty()
+        
         processed_sample = preprocess_user_query(raw_input, training_features)
-        
-
         prediction, probability = random_forest_inference(processed_sample)
-        
-
         cluster_id, cluster_desc = identify_user_cluster(processed_sample)
         
+        display_nexus_results(prediction, probability, cluster_id, cluster_desc)
 
-        st.divider()
+        st.markdown('<div class="nexus-card reveal">', unsafe_allow_html=True)
+        st.markdown('<div class="metric-label" style="margin-bottom: 2rem;">Feature Influence Matrix</div>', unsafe_allow_html=True)
         
-        col_res1, col_res2 = st.columns([1, 1])
-        
-        with col_res1:
-            st.subheader("Prediction Result")
-            display_prediction_results(prediction, probability)
-
-        with col_res2:
-            st.subheader("Customer Archetype")
-            st.info(f"**Group {cluster_id}**: {cluster_desc}")
-
-
-        st.divider()
-        st.subheader("Risk Factor Analysis")
-        st.markdown("This chart shows which factors contributed most to the prediction. Red bars increase churn risk, blue bars decrease it.")
-        
-        with st.spinner("Generating explanation..."):
+        with st.spinner("Decoding heuristic pathways..."):
             fig = rf_feature_contribution_to_churn(processed_sample)
+            fig.patch.set_facecolor('#050505')
+            for ax in fig.get_axes():
+                ax.set_facecolor('#050505')
+                ax.tick_params(colors='#ffffff')
+                ax.xaxis.label.set_color('#ffffff')
+                ax.yaxis.label.set_color('#ffffff')
+                ax.title.set_color('#ffffff')
+
             st.pyplot(fig)
+        st.markdown('</div>', unsafe_allow_html=True)
         
-        with st.expander("Show Technical Details"):
-            st.write("Processed Input Vector:")
-            st.dataframe(processed_sample)
+        with st.expander("DEEP_DATA_INSPECTION"):
+            st.code(str(processed_sample.to_dict()), language='json')
