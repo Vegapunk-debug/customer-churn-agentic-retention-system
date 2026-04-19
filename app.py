@@ -207,6 +207,10 @@ def inject_hyper_ai_css():
     
     """, unsafe_allow_html=True)
 
+# Initialize Session State
+if 'prediction_results' not in st.session_state:
+    st.session_state.prediction_results = None
+
 def render_nexus_header():
     st.markdown("""
         <div class="nexus-header reveal">
@@ -294,10 +298,11 @@ else:
             monthly_charges = st.number_input("Flux [Monthly]", min_value=0.0, value=50.0)
             total_charges = st.number_input("Flux [Cumulative]", min_value=0.0, value=50.0)
 
+        # Handle form submission
         submit = st.form_submit_button("INFER CHURN VECTOR")
 
     if submit:
-
+        # Construct raw input from form values
         raw_input = {
             'gender': gender,
             'SeniorCitizen': senior_citizen,
@@ -320,40 +325,47 @@ else:
             'TotalCharges': str(total_charges)
         }
         
-
+        # Preprocess and Infer
         processed_sample = preprocess_user_query(raw_input, training_features)
-        
-
         prediction, probability = random_forest_inference(processed_sample)
-        
-
         cluster_id, cluster_desc = identify_user_cluster(processed_sample)
         
+        # Save results to session state to ensure they survive the "Retention Agent" button click
+        st.session_state.prediction_results = {
+            "raw_input": raw_input,
+            "processed_sample": processed_sample,
+            "prediction": prediction,
+            "probability": probability,
+            "cluster_id": cluster_id,
+            "cluster_desc": cluster_desc
+        }
 
-        st.divider()
+    # Render results and Agentic Layer if prediction data exists in state
+    if st.session_state.prediction_results:
+        res = st.session_state.prediction_results
         
+        st.divider()
         col_res1, col_res2 = st.columns([1, 1])
         
         with col_res1:
             st.subheader("Prediction Result")
-            display_prediction_results(prediction, probability)
+            display_prediction_results(res['prediction'], res['probability'])
 
         with col_res2:
             st.subheader("Customer Archetype")
-            st.info(f"**Group {cluster_id}**: {cluster_desc}")
-
+            st.info(f"**Group {res['cluster_id']}**: {res['cluster_desc']}")
 
         st.divider()
         st.subheader("Risk Factor Analysis")
         st.markdown("This chart shows which factors contributed most to the prediction. Red bars increase churn risk, blue bars decrease it.")
         
         with st.spinner("Generating explanation..."):
-            fig = rf_feature_contribution_to_churn(processed_sample)
+            fig = rf_feature_contribution_to_churn(res['processed_sample'])
             st.pyplot(fig)
         
         with st.expander("Show Technical Details"):
             st.write("Processed Input Vector:")
-            st.dataframe(processed_sample)
+            st.dataframe(res['processed_sample'])
 
         # ---------------------------------------------------------
         # AGENTIC RETENTION LAYER
@@ -366,10 +378,10 @@ else:
             
             with st.status("Agent reasoning in progress...", expanded=True) as status:
                 # Get actual top factors from SHAP
-                factors = get_top_contributors(processed_sample)
+                factors = get_top_contributors(res['processed_sample'])
                 
                 # Run the workflow
-                report = agent.run_agentic_workflow(raw_input, probability, factors)
+                report = agent.run_agentic_workflow(res['raw_input'], res['probability'], factors)
                 
                 for step in report['reasoning_log']:
                     st.write(f"🔍 {step}")
@@ -409,4 +421,5 @@ else:
                 st.markdown("### 📚 Supporting References")
                 for ref in report['references']:
                     st.markdown(f"- *{ref}*")
+
 
