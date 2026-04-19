@@ -1,13 +1,13 @@
 import streamlit as st
 import pandas as pd
 import os
+import time
 from src.preprocessing import preprocess_user_query
 from src.inference import (
     load_rf_model, 
     random_forest_inference, 
     identify_user_cluster, 
-    rf_feature_contribution_to_churn,
-    display_prediction_results
+    rf_feature_contribution_to_churn
 )
 
 
