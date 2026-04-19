@@ -15,30 +15,42 @@ This repository contains a data-driven system designed to identify customers at 
 - **Data Handling:** `Pandas`, `NumPy`
 - **Visualization:** `Matplotlib`, `Seaborn`
 - **Machine Learning:** `Scikit-Learn`, `RandomForest`, `K-means`
-- **Inference & Agentic UI:** `Streamlit`, `Shap`, `KaggleHub`
+- **Environment:** `Jupyter Notebook` / `Python 3.x`
 
-## Milestone 2: Model Training, Evaluation & Retention Placeholder
+## How to Run the Pipeline
 
-The second phase introduces a formal training pipeline, robust evaluation, and the foundation for agentic retention strategies.
+1. **Preprocess the Data**: Open the `notebooks/preprocessing.ipynb` in VS Code or Jupyter, select your `.venv` kernel, and run all cells. This will clean the raw data and export it to `data/processed_churn_data.parquet`.
 
-### Key Features
-* **Dedicated Training Pipeline (`src/train.py`):** A standalone script that handles data loading, preprocessing, model training, and saving artifacts.
-* **Robust Evaluation:** Implements 5-fold cross-validation to ensure model stability and reports Accuracy, ROC-AUC, and Confusion Matrix.
-* **Retention Automation Layer (`src/retention_automation.py`):** A modular placeholder for the upcoming agentic strategy engine, including placeholder logic for personalized outreach.
-* **Comprehensive Testing:** Unit tests for both preprocessing cleaning steps and the retention module.
+2. **Train the Model**: Run the dedicated training script to train the model, evaluate it via cross-validation, and save the artifact.
+```bash
+python src/train.py
+```
+
+3. **Run the Streamlit App**: Start the interactive web application.
+```bash
+streamlit run app.py
+```
+
+## Model Performance
+
+Based on the 5-fold cross-validation and test set evaluation using the `RandomForestClassifier`:
+
+- **Mean CV Accuracy**: 78.76% (± 0.22%)
+- **Test Set Accuracy**: 77.04%
+- **ROC-AUC Score**: 82.73%
 
 ## Project Structure
 ```text
 ├── data/               # Raw and processed datasets
-├── models/             # Saved model artifacts (.pkl) and results
-├── notebooks/          # EDA and experiment notebooks
-├── src/                # Source code
-│   ├── preprocessing.py # Data cleaning and engineering
-│   ├── train.py         # Robust training script
-│   ├── inference.py     # SHAP explanations & prediction logic
-│   └── retention_automation.py # Agentic placeholder
-├── tests/              # Unit tests for core modules
-├── app.py              # Streamlit dashboard
+├── models/             # Saved ML model artifacts (*.pkl)
+├── notebooks/          # EDA and Model Training experiments
+├── src/                # Modular Python scripts
+│   ├── preprocessing.py # Feature engineering & cleaning
+│   ├── train.py         # Dedicated training script w/ cross-validation
+│   ├── ui.py            # Streamlit UI layouts
+│   ├── callbacks.py     # Streamlit app logic wrapper
+│   └── inference.py     # Model inference orchestration
+├── app.py              # Main Streamlit Entrypoint
 ├── requirements.txt    # Project dependencies
 └── README.md
 ```
@@ -50,7 +62,7 @@ Follow these steps to replicate the environment on your local machine:
 
 ### 1. Clone the Repository
 ```bash
-git clone [https://github.com/Vegapunk-debug/customer-churn-agentic-retention-system.git](https://github.com/Vegapunk-debug/customer-churn-agentic-retention-system.git)
+git clone https://github.com/Vegapunk-debug/customer-churn-agentic-retention-system.git
 cd customer-churn-agentic-retention-system
 ```
 ### 2. Create and Activate Virtual Environment
@@ -63,41 +75,5 @@ source .venv/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
-
-## How to Run the Pipeline
-
-1. **Preprocessing:** Use the `notebooks/preprocessing.ipynb` to download and prepare the initial dataset.
-2. **Training:** Run the training script to generate the model and evaluation metrics:
-   ```bash
-   export PYTHONPATH=$PYTHONPATH:$(pwd)
-   python3 src/train.py
-   ```
-3. **Inference / App:** Launch the Streamlit dashboard:
-   ```bash
-   streamlit run app.py
-   ```
-
-## Unit Testing
-
-To ensure data integrity and reliability, run the unit tests:
-```bash
-python3 -m unittest discover tests
-```
-
-## Evaluation Results
-
-After running `src/train.py`, metrics are saved to `models/evaluation_results.json`. 
-
-| Metric | Value (Baseline) |
-| :--- | :--- |
-| **Accuracy** | ~80% |
-| **ROC-AUC** | ~84% |
-| **Cross-Validation Accuracy** | ~79% (+/- 1%) |
-
-## Future Roadmap: Agentic Retention
-The `src/retention_automation.py` module is ready for integration. Future updates will include:
-- [ ] LLM-powered personalized retention message generation.
-- [ ] Automated discount/coupon assignment based on churn risk.
-- [ ] Integration with CRM tools for automated outreach.
 
 

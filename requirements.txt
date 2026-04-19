@@ -53,3 +53,9 @@ tqdm==4.67.3
 traitlets==5.14.3
 urllib3==2.6.3
 wcwidth==0.6.0
+langchain
+langchain-groq
+langchain-community
+faiss-cpu
+sentence-transformers
+python-dotenv

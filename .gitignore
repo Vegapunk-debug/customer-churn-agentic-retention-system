@@ -4,5 +4,10 @@ data/*.parquet
 .venv/
 .venv-1/
 __pycache__/
+*.pyc
+*.pkl
+*.h5
+*~
 
 .DS_Store
+.env

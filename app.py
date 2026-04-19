@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import time
 from src.preprocessing import preprocess_user_query
+from src.retention_agent import run_retention_flow
 from src.inference import (
     load_rf_model, 
     random_forest_inference, 
@@ -355,6 +356,8 @@ else:
         
         display_nexus_results(prediction, probability, cluster_id, cluster_desc)
 
+        st.session_state["processed_df"] = processed_sample
+
         st.markdown('<div class="nexus-card reveal">', unsafe_allow_html=True)
         st.markdown('<div class="metric-label" style="margin-bottom: 2rem;">Feature Influence Matrix</div>', unsafe_allow_html=True)
         
@@ -373,3 +376,12 @@ else:
         
         with st.expander("DEEP_DATA_INSPECTION"):
             st.code(str(processed_sample.to_dict()), language='json')
+            
+    if "processed_df" in st.session_state:
+        st.divider()
+        st.subheader("Agentic Retention Options")
+        if st.button("Generate AI Retention Strategy"):
+            with st.spinner("Agent analyzing customer data and playbooks..."):
+                strategy = run_retention_flow("CUST_001", st.session_state["processed_df"], model)
+                st.subheader("AI Recommended Action")
+                st.write(strategy)
