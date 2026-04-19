@@ -52,6 +52,26 @@ def display_prediction_results(prediction, probability):
     st.metric("Churn Probability", f"{probability:.2%}")
     st.progress(float(probability))
 
+def get_top_contributors(user_df, top_n=3):
+    """
+    Returns the names of the top N features contributing to the churn prediction.
+    """
+    rf_model = load_rf_model()
+    explainer = load_shap_explainer(rf_model)
+    shap_values = explainer(user_df)
+
+    if len(shap_values.shape) == 3:
+        values = shap_values.values[0, :, 1]
+    else:
+        values = shap_values.values[0]
+
+    feature_names = user_df.columns.tolist()
+    
+    # Create a list of (feature_name, absolute_shap_value)
+    contributions = sorted(zip(feature_names, values), key=lambda x: abs(x[1]), reverse=True)
+    
+    return [c[0] for c in contributions[:top_n]]
+
 def rf_feature_contribution_to_churn(user_df):
     rf_model = load_rf_model()
 

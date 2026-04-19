@@ -1,48 +1,113 @@
 import logging
+import json
+import random
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+RETENTION_TACTICS_KB = {
+    "Month-to-month": [
+        {"action": "Offer Annual Contract Discount", "benefit": "Locks in customer for 12 months", "reference": "SaaS Retention Playbook 2024"},
+        {"action": "Free Service Upgrade for 3 Months", "benefit": "Increases perceived value without permanent cost", "reference": "Customer Success manual v2"}
+    ],
+    "High Monthly Charges": [
+        {"action": "Bundle Audit & Right-sizing", "benefit": "Reduces bill while maintaining essential services", "reference": "Utility Retention Standards"},
+        {"action": "Loyalty Credit Application", "benefit": "Immediate financial relief to prevent immediate churn", "reference": "Financial Service churn mitigation"}
+    ],
+    "Fiber optic": [
+        {"action": "Security/Backup Bundle inclusion", "benefit": "Increases stickiness through ecosystem locking", "reference": "ISP Strategy Review"},
+        {"action": "Proactive Technical Health Check", "benefit": "Prevents churn due to technical frustration", "reference": "Tech Support Best Practices"}
+    ],
+    "Senior Citizen": [
+        {"action": "Dedicated Support Line Access", "benefit": "Builds trust and accessibility", "reference": "Age-Inclusive Service Design"},
+        {"action": "Simplified Billing Explanation", "benefit": "Reduces confusion-related churn", "reference": "Geriatric UX focused outreach"}
+    ]
+}
+
 class RetentionAgent:
     """
-    Placeholder for the future Retention Automation Layer.
-    This component will be responsible for generating personalized 
-    retention strategies using LLMs or pre-defined rules.
+    An Agentic AI assistant that reasons about customer churn risk,
+    retrieves best practices, and generates structured retention reports.
     """
     
-    def __init__(self, config=None):
-        self.config = config or {}
-        logger.info("RetentionAgent initialized.")
+    def __init__(self, api_key=None):
+        self.api_key = api_key
+        self.state = "IDLE"
+        logger.info("RetentionAgent Initialized.")
 
-    def generate_strategy(self, customer_profile: dict) -> dict:
+    def run_agentic_workflow(self, customer_profile: dict, risk_probability: float, risk_factors: list) -> dict:
         """
-        TODO: Implement agentic logic to generate a retention strategy.
-        Steps:
-        1. Analyze risk factors from the customer profile.
-        2. Identify optimal incentives (discounts, upgrades, personalized reaching).
-        3. Format the strategy into a human-readable or machine-actionable format.
+        Executes the agentic loop: 
+        Analyze -> Retrieve tactics -> Reason -> Generate Report
         """
-        # Placeholder logic
-        customer_id = customer_profile.get("customerID", "Unknown")
-        risk_score = customer_profile.get("churn_probability", 0.0)
+        self.state = "ANALYZING"
+        logger.info(f"State: {self.state} - Processing risk factors.")
         
-        logger.info(f"Generating strategy for customer {customer_id} (Risk: {risk_score:.2f})")
+        # 1. State: Retrieve Relevant Tactics
+        self.state = "RETRIEVING"
+        relevant_tactics = self._retrieve_tactics(customer_profile, risk_factors)
         
-        strategy = {
-            "customer_id": customer_id,
-            "status": "DRAFT",
-            "recommended_action": "TODO: Implement Retention Logic",
-            "offer": "None",
-            "justification": "Baseline placeholder."
+        # 2. State: Reasoning/Synthesis
+        self.state = "REASONING"
+        reasoning_steps = [
+            f"Customer has a {risk_probability:.1%} churn risk.",
+            f"Primary triggers identified: {', '.join(risk_factors[:3])}.",
+            f"Segment-based strategy active for {customer_profile.get('Contract', 'Unknown')} contract type."
+        ]
+        
+        # 3. State: Generating Structured Report
+        self.state = "GENERATING"
+        report = self._generate_report(customer_profile, risk_probability, risk_factors, relevant_tactics, reasoning_steps)
+        
+        self.state = "COMPLETED"
+        return report
+
+    def _retrieve_tactics(self, profile: dict, factors: list) -> list:
+        """Retrieves tactics from K-base based on customer profile."""
+        tactics = []
+        # Check contract type
+        contract = profile.get("Contract")
+        if contract in RETENTION_TACTICS_KB:
+            tactics.extend(RETENTION_TACTICS_KB[contract])
+        
+        # Check for Senior Citizen status
+        if profile.get("SeniorCitizen") == 1:
+            tactics.extend(RETENTION_TACTICS_KB["Senior Citizen"])
+            
+        # Check internet service
+        internet = profile.get("InternetService")
+        if internet in RETENTION_TACTICS_KB:
+            tactics.extend(RETENTION_TACTICS_KB[internet])
+
+        return tactics if tactics else [{"action": "Personalized Outreach Call", "benefit": "Uncover hidden pain points", "reference": "General Retention manual"}]
+
+    def _generate_report(self, profile: dict, prob: float, factors: list, tactics: list, reasoning: list) -> dict:
+        """Constructs the structured retention report."""
+        
+        # Filter top 3 factors for brevity
+        top_factors = factors[:3]
+        
+        report = {
+            "summary": {
+                "risk_level": "CRITICAL" if prob > 0.7 else "HIGH" if prob > 0.4 else "MODERATE",
+                "probability": f"{prob:.1%}",
+                "customer_segment": profile.get("Contract", "General")
+            },
+            "contributing_factors": top_factors,
+            "reasoning_log": reasoning,
+            "recommended_actions": tactics,
+            "references": list(set([t['reference'] for t in tactics])),
+            "disclaimers": {
+                "business": "These recommendations are generated by an AI agent based on historical patterns. Actual outcome may vary based on market conditions.",
+                "ethical": "Discounts and sensitive offers should be validated by human representatives to ensure fair treatment across customer groups."
+            }
         }
-        
-        return strategy
+        return report
 
-    def trigger_automated_outreach(self, strategy: dict):
-        """
-        TODO: Integrate with email/SMS gateways to send the offer.
-        """
-        logger.info(f"Triggering outreach for {strategy['customer_id']}...")
-        # Placeholder for integration
-        return True
+if __name__ == "__main__":
+    # Internal test
+    agent = RetentionAgent()
+    sample_profile = {"Contract": "Month-to-month", "InternetService": "Fiber optic", "SeniorCitizen": 1}
+    report = agent.run_agentic_workflow(sample_profile, 0.78, ["tenure", "MonthlyCharges", "Contract_Month-to-month"])
+    print(json.dumps(report, indent=4))

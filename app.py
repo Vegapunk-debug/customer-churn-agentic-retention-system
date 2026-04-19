@@ -7,8 +7,10 @@ from src.inference import (
     random_forest_inference, 
     identify_user_cluster, 
     rf_feature_contribution_to_churn,
-    display_prediction_results
+    display_prediction_results,
+    get_top_contributors
 )
+from src.retention_automation import RetentionAgent
 
 
 st.set_page_config(
@@ -352,3 +354,59 @@ else:
         with st.expander("Show Technical Details"):
             st.write("Processed Input Vector:")
             st.dataframe(processed_sample)
+
+        # ---------------------------------------------------------
+        # AGENTIC RETENTION LAYER
+        # ---------------------------------------------------------
+        st.divider()
+        st.subheader("⚡ Agentic Retention Assistant")
+        
+        if st.button("RUN RETENTION AGENT"):
+            agent = RetentionAgent()
+            
+            with st.status("Agent reasoning in progress...", expanded=True) as status:
+                # Get actual top factors from SHAP
+                factors = get_top_contributors(processed_sample)
+                
+                # Run the workflow
+                report = agent.run_agentic_workflow(raw_input, probability, factors)
+                
+                for step in report['reasoning_log']:
+                    st.write(f"🔍 {step}")
+                    import time
+                    time.sleep(0.5)
+                
+                status.update(label="Strategy successfully generated!", state="complete", expanded=False)
+
+            # Display Structured Report
+            st.markdown(f"""
+            <div class="nexus-card reveal">
+                <h3 style="color: var(--accent-emerald); border-bottom: 1px solid var(--accent-emerald); padding-bottom: 10px;">RETENTION STRATEGY REPORT</h3>
+                <p><b>Risk Level:</b> {report['summary']['risk_level']} ({report['summary']['probability']})</p>
+                <p><b>Target Segment:</b> {report['summary']['customer_segment']}</p>
+                <div style="margin: 20px 0;">
+                    <b style="color: var(--accent-amber);">Primary Risk Factors:</b>
+                    <ul>
+                        {"".join([f"<li>{f}</li>" for f in report['contributing_factors']])}
+                    </ul>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+            col_a, col_b = st.columns(2)
+            with col_a:
+                st.markdown("### 🛠 Recommended Actions")
+                for action in report['recommended_actions']:
+                    with st.expander(f"**{action['action']}**"):
+                        st.write(f"**Benefit:** {action['benefit']}")
+                        st.caption(f"Source: {action['reference']}")
+            
+            with col_b:
+                st.markdown("### 📄 Disclaimers & Ethics")
+                st.warning(report['disclaimers']['business'])
+                st.info(report['disclaimers']['ethical'])
+                
+                st.markdown("### 📚 Supporting References")
+                for ref in report['references']:
+                    st.markdown(f"- *{ref}*")
+
