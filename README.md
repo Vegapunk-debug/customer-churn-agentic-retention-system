@@ -1,4 +1,4 @@
-# 📊 OUTLIER.AI | Customer Churn Prediction & Retention System
+# OUTLIER.AI | Customer Churn Prediction & Retention System
 
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![LangChain](https://img.shields.io/badge/Agent-LangChain-green)](https://www.langchain.com/)
@@ -7,7 +7,7 @@
 
 **OUTLIER AI** is an advanced, agentic system designed to not only predict customer churn but also autonomously reason about risk factors and generate tailored retention strategies using Retrieval-Augmented Generation (RAG).
 
-## 🚀 Key Features
+## Key Features
 
 - **Predictive Intelligence:** High-accuracy Random Forest classifier with 82.7% ROC-AUC.
 - **Agentic Reasoning:** A multi-stage AI agent that analyzes SHAP-based churn drivers to understand *why* a customer is at risk.
@@ -17,14 +17,14 @@
   - **Llama-3 Integration:** Deep synthesis using Llama-3-70b (via Groq) for conversational strategy generation.
 - **Cyberpunk UI:** High-fidelity, glassmorphic dashboard built with Streamlit.
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **Core AI:** `Scikit-Learn`, `SHAP`, `RandomForest`
 - **Agentic Layer:** `LangChain`, `Groq (Llama-3)`, `FAISS`
 - **Dashboard:** `Streamlit`, `Python-Dotenv`
 - **Embedding Models:** `HuggingFace (all-MiniLM-L6-v2)`
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 ├── models/             # Saved ML model artifacts (rf_model.pkl, etc.)
@@ -40,7 +40,7 @@
 └── README.md
 ```
 
-## 🏁 Setup & Installation
+## Setup & Installation
 
 ### 1. Environment Configuration
 ```bash
@@ -67,13 +67,13 @@ python src/train.py
 streamlit run app.py
 ```
 
-## 📈 Model Insights
+## Model Insights
 Our training pipeline uses **5-fold cross-validation** to ensure robustness:
 - **Accuracy:** ~78.8%
 - **ROC-AUC Score:** 82.7%
 - **Top Feature Contributions:** `Contract_Month-to-month`, `TotalCharges`, `Tenure`.
 
-## 📜 Deployment Note
+## Deployment Note
 When deploying to **Streamlit Cloud**, do not use a `.env` file. Instead, add your `GROQ_API_KEY` to the **Secrets** tab in the Streamlit Cloud Settings.
 
 
